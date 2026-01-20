@@ -58,6 +58,7 @@ public final class Constants {
     ;
     public static final double SPIN_UP_FEEDER_VOLTAGE = -6;
     public static final double SPIN_UP_SECONDS = 3.0;
+    public static final double RATE_LIMIT = 12.0/50.0;
   }
 
   public static final class OperatorConstants {
