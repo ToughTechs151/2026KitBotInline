@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.FuelConstants.*;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 
 public class CANFuelSubsystem extends SubsystemBase {
   private final SparkMax feederRoller;
@@ -26,6 +27,8 @@ public class CANFuelSubsystem extends SubsystemBase {
 
   /** Creates a new CANBallSubsystem. */
   public CANFuelSubsystem() {
+    //finish this later
+    SlewRateLimiter limiter = new SlewRateLimiter();
     // create brushed motors for each of the motors on the launcher mechanism
     intakeLauncherRoller = new SparkMax(INTAKE_LAUNCHER_MOTOR_ID, MotorType.kBrushless);
     feederRoller = new SparkMax(FEEDER_MOTOR_ID, MotorType.kBrushless);
