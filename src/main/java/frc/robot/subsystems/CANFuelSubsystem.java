@@ -25,6 +25,7 @@ public class CANFuelSubsystem extends SubsystemBase {
   private static final String LAUNCHING_LAUNCHER_ROLLER_KEY = "Launching launcher roller value";
   private static final String SPINUP_FEEDER_ROLLER_KEY = "Spin-up feeder roller value";
   private SlewRateLimiter limiter;
+  private double feederGoal = 0.0;
 
   /** Creates a new CANBallSubsystem. */
   public CANFuelSubsystem() {
@@ -59,37 +60,35 @@ public class CANFuelSubsystem extends SubsystemBase {
 
   // A method to set the rollers to values for intaking
   public void intake() {
-    feederRoller.setVoltage(limiter.calculate(SmartDashboard.getNumber(INTAKING_FEEDER_ROLLER_KEY, INTAKING_FEEDER_VOLTAGE)));
+    feederGoal = SmartDashboard.getNumber(INTAKING_FEEDER_ROLLER_KEY, INTAKING_FEEDER_VOLTAGE);
     intakeLauncherRoller
         .setVoltage(SmartDashboard.getNumber(INTAKING_INTAKE_ROLLER_KEY, INTAKING_INTAKE_VOLTAGE));
   }
-  
+
   // A method to set the rollers to values for ejecting fuel out the intake. Uses
   // the same values as intaking, but in the opposite direction.
   public void eject() {
-    feederRoller
-        .setVoltage(-1 * limiter.calculate(SmartDashboard.getNumber(INTAKING_FEEDER_ROLLER_KEY, INTAKING_FEEDER_VOLTAGE)));
+    feederGoal = SmartDashboard.getNumber(INTAKING_FEEDER_ROLLER_KEY, INTAKING_FEEDER_VOLTAGE);
     intakeLauncherRoller
         .setVoltage(-1 * SmartDashboard.getNumber(INTAKING_INTAKE_ROLLER_KEY, INTAKING_INTAKE_VOLTAGE));
   }
-  
+
   // A method to set the rollers to values for launching.
   public void launch() {
-    feederRoller.setVoltage(limiter.calculate(SmartDashboard.getNumber(LAUNCHING_FEEDER_ROLLER_KEY, LAUNCHING_FEEDER_VOLTAGE)));
+    feederGoal = SmartDashboard.getNumber(LAUNCHING_FEEDER_ROLLER_KEY, LAUNCHING_FEEDER_VOLTAGE);
     intakeLauncherRoller
         .setVoltage(SmartDashboard.getNumber(LAUNCHING_LAUNCHER_ROLLER_KEY, LAUNCHING_LAUNCHER_VOLTAGE));
   }
 
   // A method to stop the rollers
   public void stop() {
-    feederRoller.setVoltage(limiter.calculate(0));
+    feederGoal = 0.0;
     intakeLauncherRoller.set(0);
   }
 
   // A method to spin up the launcher roller while spinning the feeder roller to
   public void spinUp() {
-    feederRoller
-        .setVoltage(limiter.calculate(SmartDashboard.getNumber(SPINUP_FEEDER_ROLLER_KEY, SPIN_UP_FEEDER_VOLTAGE)));
+    feederGoal = SmartDashboard.getNumber(SPINUP_FEEDER_ROLLER_KEY, SPIN_UP_FEEDER_VOLTAGE);
     intakeLauncherRoller
         .setVoltage(SmartDashboard.getNumber(LAUNCHING_LAUNCHER_ROLLER_KEY, LAUNCHING_LAUNCHER_VOLTAGE));
   }
@@ -109,5 +108,9 @@ public class CANFuelSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    double feederVoltage = limiter.calculate(feederGoal);
+    feederRoller.setVoltage(feederVoltage);
+    SmartDashboard.putNumber("Feeder Goal", feederGoal);
+    SmartDashboard.putNumber("Feeder Set Voltage", feederVoltage);
   }
 }
