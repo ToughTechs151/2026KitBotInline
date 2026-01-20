@@ -107,8 +107,10 @@ public class CANFuelSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("LauncherCurrent", intakeLauncherRoller.getOutputCurrent());
-    SmartDashboard.putNumber("LauncherVoltage", intakeLauncherRoller.getAppliedOutput() * 12); // 12 = nominal voltage
+    SmartDashboard.putNumber("LauncherVoltage", intakeLauncherRoller.getAppliedOutput() 
+    * intakeLauncherRoller.getBusVoltage());
     SmartDashboard.putNumber("FeederCurrent", feederRoller.getOutputCurrent());
-    SmartDashboard.putNumber("FeederVoltage", feederRoller.getAppliedOutput() * 12); // 12 = nominal voltage
+    SmartDashboard.putNumber("FeederVoltage", feederRoller.getAppliedOutput() 
+    * feederRoller.getBusVoltage());
   }
 }
