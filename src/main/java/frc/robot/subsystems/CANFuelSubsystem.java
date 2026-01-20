@@ -112,5 +112,11 @@ public class CANFuelSubsystem extends SubsystemBase {
     feederRoller.setVoltage(feederVoltage);
     SmartDashboard.putNumber("Feeder Goal", feederGoal);
     SmartDashboard.putNumber("Feeder Set Voltage", feederVoltage);
+    SmartDashboard.putNumber("LauncherCurrent", intakeLauncherRoller.getOutputCurrent());
+    SmartDashboard.putNumber("LauncherVoltage", intakeLauncherRoller.getAppliedOutput() 
+    * intakeLauncherRoller.getBusVoltage());
+    SmartDashboard.putNumber("FeederCurrent", feederRoller.getOutputCurrent());
+    SmartDashboard.putNumber("FeederVoltage", feederRoller.getAppliedOutput() 
+    * feederRoller.getBusVoltage());
   }
 }
