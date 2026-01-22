@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.PersistMode;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -17,6 +18,17 @@ import static frc.robot.Constants.FuelConstants.*;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 
 public class CANFuelSubsystem extends SubsystemBase {
+  // Class to define the hardware (Motor/Encoder)
+  public static class Hardware {
+    SparkMax motor;
+    RelativeEncoder encoder;
+
+    public Hardware(SparkMax motor, RelativeEncoder encoder) {
+      this.motor = motor;
+      this.encoder = encoder;
+    }
+  }
+  
   private final SparkMax feederRoller;
   private final SparkMax intakeLauncherRoller;
   private static final String INTAKING_FEEDER_ROLLER_KEY = "Intaking feeder roller value";
@@ -24,11 +36,17 @@ public class CANFuelSubsystem extends SubsystemBase {
   private static final String LAUNCHING_FEEDER_ROLLER_KEY = "Launching feeder roller value";
   private static final String LAUNCHING_LAUNCHER_ROLLER_KEY = "Launching launcher roller value";
   private static final String SPINUP_FEEDER_ROLLER_KEY = "Spin-up feeder roller value";
+  private final SparkMax motor;
+  private final RelativeEncoder encoder;
   private SlewRateLimiter limiter;
   private double feederGoal = 0.0;
 
   /** Creates a new CANBallSubsystem. */
-  public CANFuelSubsystem() {
+  public CANFuelSubsystem(Hardware motorHardware) {
+    this.motor = motorHardware.motor;
+    this.encoder = motorHardware.encoder;
+    
+    //Create the limit on the slew limiter
     limiter = new SlewRateLimiter(RATE_LIMIT);
     // create brushed motors for each of the motors on the launcher mechanism
     intakeLauncherRoller = new SparkMax(INTAKE_LAUNCHER_MOTOR_ID, MotorType.kBrushless);
@@ -91,6 +109,13 @@ public class CANFuelSubsystem extends SubsystemBase {
     feederGoal = SmartDashboard.getNumber(SPINUP_FEEDER_ROLLER_KEY, SPIN_UP_FEEDER_VOLTAGE);
     intakeLauncherRoller
         .setVoltage(SmartDashboard.getNumber(LAUNCHING_LAUNCHER_ROLLER_KEY, LAUNCHING_LAUNCHER_VOLTAGE));
+  }
+
+  public static Hardware initializeHardware() {
+    SparkMax motor = new SparkMax(INTAKE_LAUNCHER_MOTOR_ID, MotorType.kBrushless);
+    RelativeEncoder encoder = motor.getEncoder();
+
+    return new Hardware(motor, encoder);
   }
 
   // A command factory to turn the spinUp method into a command that requires this
