@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -28,6 +29,7 @@ public class RobotContainer {
   private final CANDriveSubsystem driveSubsystem = new CANDriveSubsystem();
   private final CANFuelSubsystem ballSubsystem = new CANFuelSubsystem();
 
+  private final PowerDistribution pdp = new PowerDistribution();
   // The driver's controller
   private final CommandXboxController driverController = new CommandXboxController(
       DRIVER_CONTROLLER_PORT);
@@ -44,6 +46,7 @@ public class RobotContainer {
    */
   public RobotContainer() {
     SmartDashboard.putData(ballSubsystem);
+    SmartDashboard.putData(pdp);
     configureBindings();
 
     // Set the options to show up in the Dashboard for selecting auto modes. If you
