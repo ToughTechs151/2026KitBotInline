@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -28,6 +29,7 @@ public class RobotContainer {
   private final CANDriveSubsystem driveSubsystem = new CANDriveSubsystem();
   private final CANFuelSubsystem ballSubsystem = new CANFuelSubsystem();
 
+  private final PowerDistribution pdp = new PowerDistribution();
   // The driver's controller
   private final CommandXboxController driverController = new CommandXboxController(
       DRIVER_CONTROLLER_PORT);
@@ -43,6 +45,8 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    SmartDashboard.putData(ballSubsystem);
+    SmartDashboard.putData(pdp);
     configureBindings();
 
     // Set the options to show up in the Dashboard for selecting auto modes. If you
@@ -67,17 +71,18 @@ public class RobotContainer {
 
     // While the left bumper on operator controller is held, intake Fuel
     operatorController.leftBumper()
-        .whileTrue(ballSubsystem.runEnd(ballSubsystem::intake, ballSubsystem::stop));
+        .whileTrue(ballSubsystem.runEnd(ballSubsystem::intake, ballSubsystem::stop).withName("Intake"));
+
     // While the right bumper on the operator controller is held, spin up for 1
     // second, then launch fuel. When the button is released, stop.
     operatorController.rightBumper()
         .whileTrue(ballSubsystem.spinUpCommand().withTimeout(SPIN_UP_SECONDS)
             .andThen(ballSubsystem.launchCommand())
-            .finallyDo(ballSubsystem::stop));
+            .finallyDo(ballSubsystem::stop).withName("Launch"));
     // While the A button is held on the operator controller, eject fuel back out
     // the intake
     operatorController.a()
-        .whileTrue(ballSubsystem.runEnd(ballSubsystem::eject, ballSubsystem::stop));
+        .whileTrue(ballSubsystem.runEnd(ballSubsystem::eject, ballSubsystem::stop).withName("Eject"));
 
     // Set the default command for the drive subsystem to the command provided by
     // factory with the values provided by the joystick axes on the driver

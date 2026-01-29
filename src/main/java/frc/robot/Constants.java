@@ -58,8 +58,8 @@ public final class Constants {
     public static final double LAUNCHING_FEEDER_VOLTAGE = 9;
     public static final double LAUNCHING_LAUNCHER_VOLTAGE = 6.7;
     public static final double SPIN_UP_FEEDER_VOLTAGE = -6;
-    public static final double SPIN_UP_SECONDS = 3.0;
-    public static final double RATE_LIMIT = 12.0; // volts per second
+    public static final double SPIN_UP_SECONDS = 1.0;
+    public static final double RATE_LIMIT = 999.0; // volts per second
 
     /** Motor simulation constants. */
     public static final double POUND_IN2_TO_KG_METERS2 = Units.lbsToKilograms(1) 
