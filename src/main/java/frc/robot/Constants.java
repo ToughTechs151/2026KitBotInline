@@ -44,19 +44,22 @@ public final class Constants {
 
     // Motor controller IDs for Fuel Mechanism motors
     public static final int FEEDER_MOTOR_ID = 6;
-    public static final int INTAKE_LAUNCHER_MOTOR_ID = 5;
+    public static final int LAUNCHER_MOTOR_ID = 5;
+    public static final int INTAKE_MOTOR_ID = 14;
 
     // Current limit and nominal voltage for fuel mechanism motors.
     public static final int FEEDER_MOTOR_CURRENT_LIMIT = 60;
     public static final int LAUNCHER_MOTOR_CURRENT_LIMIT = 60;
+    public static final int INTAKE_MOTOR_CURRENT_LIMIT = 60;
 
     // Voltage values for various fuel operations. These values may need to be tuned
     // based on exact robot construction.
     // See the Software Guide for tuning information
     public static final double INTAKING_FEEDER_VOLTAGE = -12;
-    public static final double INTAKING_INTAKE_VOLTAGE = 10;
+    public static final double INTAKING_INTAKE_VOLTAGE = 8;
     public static final double LAUNCHING_FEEDER_VOLTAGE = 9;
-    public static final double LAUNCHING_LAUNCHER_VOLTAGE = 6.7;
+    public static final double LAUNCHING_LAUNCHER_VOLTAGE = 8;
+    public static final double LAUNCHING_INTAKE_VOLTAGE = 8;
     public static final double SPIN_UP_FEEDER_VOLTAGE = -6;
     public static final double SPIN_UP_SECONDS = 1.0;
     public static final double RATE_LIMIT = 999.0; // volts per second
@@ -68,6 +71,8 @@ public final class Constants {
     public static final double FEEDER_MOTOR_MOI_KG_METERS2 = FEEDER_MOTOR_MOI_IN_LBS2 * POUND_IN2_TO_KG_METERS2;
         public static final double LAUNCHER_MOTOR_MOI_IN_LBS2 = 5.0;
     public static final double LAUNCHER_MOTOR_MOI_KG_METERS2 = LAUNCHER_MOTOR_MOI_IN_LBS2 * POUND_IN2_TO_KG_METERS2;
+    public static final double INTAKE_MOTOR_MOI_IN_LBS2 = 1.0;
+    public static final double INTAKE_MOTOR_MOI_KG_METERS2 = INTAKE_MOTOR_MOI_IN_LBS2 * POUND_IN2_TO_KG_METERS2;
   }
 
   public static final class OperatorConstants {
