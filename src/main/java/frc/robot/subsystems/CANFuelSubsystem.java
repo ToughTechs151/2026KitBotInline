@@ -64,7 +64,7 @@ public class CANFuelSubsystem extends SubsystemBase {
     limiter = new SlewRateLimiter(RATE_LIMIT);
     // create brushed motors for each of the motors on the launcher mechanism
     launcherRoller = new SparkMax(LAUNCHER_MOTOR_ID, MotorType.kBrushless);
-    intakeRoller = new SparkMax(LAUNCHER_MOTOR_ID, MotorType.kBrushless);
+    intakeRoller = new SparkMax(INTAKE_MOTOR_ID, MotorType.kBrushless);
     feederRoller = new SparkMax(FEEDER_MOTOR_ID, MotorType.kBrushless);
     feederEncoder = feederRoller.getEncoder();
     launcherEncoder = launcherRoller.getEncoder();
@@ -106,7 +106,7 @@ public class CANFuelSubsystem extends SubsystemBase {
   // A method to set the rollers to values for intaking
   public void intake() {
     feederGoal = SmartDashboard.getNumber(INTAKING_FEEDER_ROLLER_KEY, INTAKING_FEEDER_VOLTAGE);
-    launcherGoal = SmartDashboard.getNumber(INTAKING_INTAKE_ROLLER_KEY, INTAKING_INTAKE_VOLTAGE);
+    launcherGoal = 0.0;
     intakeGoal = SmartDashboard.getNumber(INTAKING_INTAKE_ROLLER_KEY, INTAKING_INTAKE_VOLTAGE);
   }
 
@@ -114,7 +114,7 @@ public class CANFuelSubsystem extends SubsystemBase {
   // the same values as intaking, but in the opposite direction.
   public void eject() {
     feederGoal = -1 * SmartDashboard.getNumber(INTAKING_FEEDER_ROLLER_KEY, INTAKING_FEEDER_VOLTAGE);
-    launcherGoal = -1 * SmartDashboard.getNumber(INTAKING_INTAKE_ROLLER_KEY, INTAKING_INTAKE_VOLTAGE);
+    launcherGoal = 0.0;
     intakeGoal = -1 * SmartDashboard.getNumber(INTAKING_INTAKE_ROLLER_KEY, INTAKING_INTAKE_VOLTAGE);
   }
 
