@@ -66,10 +66,10 @@ public final class Constants {
     public static final double RATE_LIMIT = 999.0; // volts per second
 
     // Constants tunable through TunableNumbers
-    public static final double LAUNCHER_SPEED_RPM = 1900.0;
-    public static final double LAUNCHER_KP_VOLTS_PER_RPM = 0.00005;
+    public static final double LAUNCHER_SPEED_RPM = 3200.0;
+    public static final double LAUNCHER_KP_VOLTS_PER_RPM = 0.004;
     public static final double LAUNCHER_KS_VOLTS = 0.0;
-    public static final double LAUNCHER_KV_VOLTS_PER_RPM = 0.002;
+    public static final double LAUNCHER_KV_VOLTS_PER_RPM = 0.0022;
     public static final double LAUNCHER_KA_VOLTS_PER_RPM2 = 0.0;
 
     /** Motor simulation constants. */

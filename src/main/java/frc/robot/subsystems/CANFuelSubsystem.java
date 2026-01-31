@@ -58,6 +58,7 @@ public class CANFuelSubsystem extends SubsystemBase {
   private SlewRateLimiter limiter;
   private double feederGoal = 0.0;
   private double launcherGoal = 0.0;
+  private boolean launcherEnabled = false;
   private double intakeGoal = 0.0;
 
   private double pidOutput = 0.0;
@@ -118,10 +119,8 @@ public class CANFuelSubsystem extends SubsystemBase {
     // the motor to inverted so that positive values are used for intaking,
     // and apply the config to the controller
     SparkMaxConfig intakeConfig = new SparkMaxConfig();
-    intakeConfig.inverted(true);
     intakeConfig.smartCurrentLimit(INTAKE_MOTOR_CURRENT_LIMIT);
     intakeRoller.configure(intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
   }
 
   // A method to set the rollers to values for intaking
@@ -151,6 +150,7 @@ public class CANFuelSubsystem extends SubsystemBase {
 
   // A method to stop the rollers
   public void stop() {
+    launcherEnabled = false;
     feederGoal = 0.0;
     launcherGoal = 0.0;
     launcherController.setSetpoint(launcherGoal);
@@ -160,6 +160,8 @@ public class CANFuelSubsystem extends SubsystemBase {
   // A method to spin up the intake and launcher roller while spinning the feeder
   // roller to keep the balls out of the launcher
   public void spinUp() {
+    loadPidfTunableNumbers();
+    launcherEnabled = true;
     feederGoal = SmartDashboard.getNumber(SPINUP_FEEDER_ROLLER_KEY, SPIN_UP_FEEDER_VOLTAGE);
     launcherGoal = launcherRPM.get();
     launcherController.setSetpoint(launcherGoal);
@@ -190,9 +192,16 @@ public class CANFuelSubsystem extends SubsystemBase {
     // Calculate the the motor command by adding the PID controller output and
     // feedforward to run the motor at the desired speed. Store the individual
     // values for logging.
-    pidOutput = launcherController.calculate(launcherEncoder.getVelocity());
-    newFeedforward = feedforward.calculate(launcherController.getSetpoint());
-    launcherRoller.setVoltage(pidOutput + newFeedforward);
+    if (launcherEnabled) {
+      pidOutput = launcherController.calculate(launcherEncoder.getVelocity());
+      newFeedforward = feedforward.calculate(launcherController.getSetpoint());
+      launcherRoller.setVoltage(pidOutput + newFeedforward);
+    } else {
+      launcherController.reset();
+      pidOutput = 0.0;
+      newFeedforward = 0.0;
+      launcherRoller.setVoltage(0.0);
+    }
 
     // Simulate the roller motors in simulation mode
     if (RobotBase.isSimulation()) {
@@ -228,9 +237,24 @@ public class CANFuelSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("FeederVoltage", feederRoller.getAppliedOutput()
         * feederRoller.getBusVoltage());
     SmartDashboard.putNumber("FeederVelocity", feederEncoder.getVelocity());
-    
+
     SmartDashboard.putNumber("Launcher PID", pidOutput);
     SmartDashboard.putNumber("Launcher Feedforward", newFeedforward);
+    SmartDashboard.putBoolean("Launcher Enabled", launcherEnabled);
 
+  }
+
+  /**
+   * Load PIDF values that can be tuned at runtime. This should only be called
+   * when the controller
+   * is disabled - for example from enable().
+   */
+  private void loadPidfTunableNumbers() {
+
+    // Read tunable values for PID controller
+    launcherController.setP(proportionalGain.get());
+
+    // Read tunable values for Feedforward and create a new instance
+    feedforward = new SimpleMotorFeedforward(staticGain.get(), velocityGain.get(), accelerationGain.get());
   }
 }
