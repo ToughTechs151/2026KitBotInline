@@ -9,8 +9,9 @@
         "sidebar": {
           "width": 300,
           "expanded": [
+            "/SmartDashboard/PowerDistribution[0]",
             "/SmartDashboard",
-            "/SmartDashboard/PowerDistribution[0]"
+            "/SmartDashboard/CANFuelSubsystem"
           ]
         },
         "tabs": {
@@ -51,11 +52,31 @@
                   },
                   {
                     "type": "stepped",
-                    "logKey": "NT:/SmartDashboard/Launcher Goal",
+                    "logKey": "NT:/SmartDashboard/LauncherVoltage",
                     "logType": "Number",
                     "visible": true,
                     "options": {
-                      "color": "#e48b32",
+                      "color": "#858584",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/SmartDashboard/Launcher PID",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#3b875a",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/SmartDashboard/Launcher Feedforward",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#d993aa",
                       "size": "normal"
                     }
                   }
@@ -90,9 +111,38 @@
                       "color": "#c0b487",
                       "size": "normal"
                     }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/SmartDashboard/Launcher Goal",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e48b32",
+                      "size": "normal"
+                    }
                   }
                 ],
-                "discreteSources": [],
+                "discreteSources": [
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/SmartDashboard/Launcher Enabled",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#5f4528"
+                    }
+                  },
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/SmartDashboard/CANFuelSubsystem/.command",
+                    "logType": "String",
+                    "visible": true,
+                    "options": {
+                      "color": "#2b66a2"
+                    }
+                  }
+                ],
                 "leftLockedRange": null,
                 "rightLockedRange": null,
                 "leftUnitConversion": {
@@ -108,7 +158,7 @@
               },
               "controllerUUID": "iufxyh6bu7wx0q1gwlm8fhqvqo4l7c8j",
               "renderer": null,
-              "controlsHeight": 200
+              "controlsHeight": 305
             },
             {
               "type": 1,
