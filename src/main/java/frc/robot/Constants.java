@@ -66,7 +66,7 @@ public final class Constants {
     public static final double RATE_LIMIT = 999.0; // volts per second
 
     // Constants tunable through TunableNumbers
-    public static final double LAUNCHER_SPEED_RPM = 3200.0;
+    public static final double LAUNCHER_SPEED_RPM = 4800.0;
     public static final double LAUNCHER_KP_VOLTS_PER_RPM = 0.004;
     public static final double LAUNCHER_KS_VOLTS = 0.0;
     public static final double LAUNCHER_KV_VOLTS_PER_RPM = 0.0022;

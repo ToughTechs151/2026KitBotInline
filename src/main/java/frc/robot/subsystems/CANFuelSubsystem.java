@@ -142,7 +142,7 @@ public class CANFuelSubsystem extends SubsystemBase {
 
   // A method to set the rollers to values for launching.
   public void launch() {
-    feederGoal = SmartDashboard.getNumber(LAUNCHING_FEEDER_ROLLER_KEY, LAUNCHING_FEEDER_VOLTAGE);
+    // feederGoal = SmartDashboard.getNumber(LAUNCHING_FEEDER_ROLLER_KEY, LAUNCHING_FEEDER_VOLTAGE);
     launcherGoal = launcherRPM.get();
     launcherController.setSetpoint(launcherGoal);
     intakeGoal = SmartDashboard.getNumber(LAUNCHING_INTAKE_ROLLER_KEY, LAUNCHING_INTAKE_VOLTAGE);
@@ -162,7 +162,7 @@ public class CANFuelSubsystem extends SubsystemBase {
   public void spinUp() {
     loadPidfTunableNumbers();
     launcherEnabled = true;
-    feederGoal = SmartDashboard.getNumber(SPINUP_FEEDER_ROLLER_KEY, SPIN_UP_FEEDER_VOLTAGE);
+    // feederGoal = SmartDashboard.getNumber(SPINUP_FEEDER_ROLLER_KEY, SPIN_UP_FEEDER_VOLTAGE);
     launcherGoal = launcherRPM.get();
     launcherController.setSetpoint(launcherGoal);
     intakeGoal = SmartDashboard.getNumber(LAUNCHING_INTAKE_ROLLER_KEY, LAUNCHING_INTAKE_VOLTAGE);
@@ -184,11 +184,6 @@ public class CANFuelSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
-    // Use the slew rate limiter to ramp the feeder voltage to avoid sudden changes
-    double feederVoltage = limiter.calculate(feederGoal);
-    feederRoller.setVoltage(feederVoltage);
-    intakeRoller.setVoltage(intakeGoal);
-
     // Calculate the the motor command by adding the PID controller output and
     // feedforward to run the motor at the desired speed. Store the individual
     // values for logging.
@@ -196,12 +191,22 @@ public class CANFuelSubsystem extends SubsystemBase {
       pidOutput = launcherController.calculate(launcherEncoder.getVelocity());
       newFeedforward = feedforward.calculate(launcherController.getSetpoint());
       launcherRoller.setVoltage(pidOutput + newFeedforward);
+      if (launcherEncoder.getVelocity() < launcherGoal*0.9) {
+        feederGoal = SmartDashboard.getNumber(SPINUP_FEEDER_ROLLER_KEY, SPIN_UP_FEEDER_VOLTAGE);
+      } else {
+        feederGoal = SmartDashboard.getNumber(LAUNCHING_FEEDER_ROLLER_KEY, LAUNCHING_FEEDER_VOLTAGE);
+      }
     } else {
       launcherController.reset();
       pidOutput = 0.0;
       newFeedforward = 0.0;
       launcherRoller.setVoltage(0.0);
     }
+
+    // Use the slew rate limiter to ramp the feeder voltage to avoid sudden changes
+    double feederVoltage = limiter.calculate(feederGoal);
+    feederRoller.setVoltage(feederVoltage);
+    intakeRoller.setVoltage(intakeGoal);
 
     // Simulate the roller motors in simulation mode
     if (RobotBase.isSimulation()) {
