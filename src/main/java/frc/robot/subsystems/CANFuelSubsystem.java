@@ -7,12 +7,9 @@ package frc.robot.subsystems;
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
-import com.revrobotics.sim.SparkMaxSim;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkMax;
-
-import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -20,12 +17,6 @@ import frc.robot.util.TunableNumber;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N2;
-import edu.wpi.first.math.system.LinearSystem;
-import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.system.plant.LinearSystemId;
-import edu.wpi.first.wpilibj.RobotBase;
 
 import static frc.robot.Constants.FuelConstants.*;
 
@@ -36,19 +27,6 @@ public class CANFuelSubsystem extends SubsystemBase {
   private final RelativeEncoder feederEncoder;
   private final RelativeEncoder launcherEncoder;
   private final RelativeEncoder intakeEncoder;
-
-  // Simulation objects
-  private final SparkMaxSim feederSparkSim;
-  private final SparkMaxSim launcherSparkSim;
-  private final SparkMaxSim intakeSparkSim;
-  private final DCMotor motorGearbox = DCMotor.getNEO(1);
-  private final LinearSystem<N2, N1, N2> feederPlant = LinearSystemId.createDCMotorSystem(motorGearbox,
-      FEEDER_MOTOR_MOI_KG_METERS2, 1);
-  private final DCMotorSim feederMotorSim = new DCMotorSim(feederPlant, motorGearbox);
-  private final LinearSystem<N2, N1, N2> launcherPlant = LinearSystemId.createDCMotorSystem(motorGearbox,
-      LAUNCHER_MOTOR_MOI_KG_METERS2, 1);
-  private final DCMotorSim launcherMotorSim = new DCMotorSim(launcherPlant, motorGearbox);
-  private final DCMotorSim intakeMotorSim = new DCMotorSim(launcherPlant, motorGearbox);
 
   private static final String INTAKING_FEEDER_ROLLER_KEY = "Intaking feeder roller value";
   private static final String INTAKING_INTAKE_ROLLER_KEY = "Intaking intake roller value";
@@ -86,10 +64,6 @@ public class CANFuelSubsystem extends SubsystemBase {
     feederEncoder = feederRoller.getEncoder();
     launcherEncoder = launcherRoller.getEncoder();
     intakeEncoder = intakeRoller.getEncoder();
-
-    launcherSparkSim = new SparkMaxSim(launcherRoller, motorGearbox);
-    feederSparkSim = new SparkMaxSim(feederRoller, motorGearbox);
-    intakeSparkSim = new SparkMaxSim(intakeRoller, motorGearbox);
 
     // put default values for various fuel operations onto the dashboard
     // all methods in this subsystem pull their values from the dashboard to allow
@@ -208,21 +182,6 @@ public class CANFuelSubsystem extends SubsystemBase {
     feederRoller.setVoltage(feederVoltage);
     intakeRoller.setVoltage(intakeGoal);
 
-    // Simulate the roller motors in simulation mode
-    if (RobotBase.isSimulation()) {
-      feederMotorSim.setInput(feederVoltage);
-      feederMotorSim.update(0.020);
-      feederSparkSim.iterate(feederMotorSim.getAngularVelocityRPM(), 12.0, 0.02);
-
-      launcherMotorSim.setInput(pidOutput + newFeedforward);
-      launcherMotorSim.update(0.020);
-      launcherSparkSim.iterate(launcherMotorSim.getAngularVelocityRPM(), 12.0, 0.02);
-
-      intakeMotorSim.setInput(intakeGoal);
-      intakeMotorSim.update(0.020);
-      intakeSparkSim.iterate(intakeMotorSim.getAngularVelocityRPM(), 12.0, 0.02);
-    }
-
     // Update SmartDashboard values for monitoring
     SmartDashboard.putNumber("Feeder Goal", feederGoal);
     SmartDashboard.putNumber("Feeder Set Voltage", feederVoltage);
@@ -262,4 +221,22 @@ public class CANFuelSubsystem extends SubsystemBase {
     // Read tunable values for Feedforward and create a new instance
     feedforward = new SimpleMotorFeedforward(staticGain.get(), velocityGain.get(), accelerationGain.get());
   }
+
+  // Functions for simulation purposes
+
+  /** Returns the feeder motor for simulation. */
+  public SparkMax getFeederMotor() {
+    return feederRoller;
+  }
+
+  /** Returns the intake motor for simulation. */
+  public SparkMax getIntakeMotor() {
+    return intakeRoller;
+  }
+
+  /** Returns the launcher motor for simulation. */
+  public SparkMax getLauncherMotor() {
+    return launcherRoller;
+  }
+
 }

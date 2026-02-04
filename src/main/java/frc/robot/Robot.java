@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.sim.FuelSubsystemSim;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -121,13 +122,29 @@ public class Robot extends TimedRobot {
   public void testPeriodic() {
   }
 
+ /*
+   * This set of functions is for simulation support only, and is not called on
+   * the real robot. Put plant-model related functionality here. For training
+   * purposes, students should not have to modify this functionality.
+   */
+
+  // Simple robot plant model for simulation purposes
+  FuelSubsystemSim fuelModel;
+
   /** This function is called once when the robot is first started up. */
   @Override
   public void simulationInit() {
+
+    // Add code to run when the robot is initialized during simulations.
+    fuelModel = new FuelSubsystemSim(m_robotContainer.getBallSubsystem());
   }
 
   /** This function is called periodically whilst in simulation. */
   @Override
   public void simulationPeriodic() {
+    // Add code to run repeatedly during simulations.
+    if (isSimulation() && fuelModel != null) {
+      fuelModel.updateSim();
+    }
   }
 }

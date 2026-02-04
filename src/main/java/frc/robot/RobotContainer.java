@@ -106,4 +106,13 @@ public class RobotContainer {
     // An example command will be run in autonomous
     return autoChooser.getSelected();
   }
+
+  /**
+   * Use this to get the Ball Subsystem.
+   *
+   * @return a reference to the Ball Subsystem
+   */
+  public CANFuelSubsystem getBallSubsystem() {
+    return ballSubsystem;
+  }
 }
