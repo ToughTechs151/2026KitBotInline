@@ -9,6 +9,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -78,6 +79,7 @@ public class CANFuelSubsystem extends SubsystemBase {
     // create the configuration for the feeder roller, set a current limit and apply
     // the config to the controller
     SparkMaxConfig feederConfig = new SparkMaxConfig();
+    feederConfig.idleMode(IdleMode.kBrake);
     feederConfig.smartCurrentLimit(FEEDER_MOTOR_CURRENT_LIMIT);
     feederRoller.configure(feederConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
@@ -86,6 +88,7 @@ public class CANFuelSubsystem extends SubsystemBase {
     // launching, and apply the config to the controller
     SparkMaxConfig launcherConfig = new SparkMaxConfig();
     launcherConfig.inverted(true);
+    launcherConfig.idleMode(IdleMode.kBrake);
     launcherConfig.smartCurrentLimit(LAUNCHER_MOTOR_CURRENT_LIMIT);
     launcherRoller.configure(launcherConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
@@ -93,6 +96,7 @@ public class CANFuelSubsystem extends SubsystemBase {
     // the motor to inverted so that positive values are used for intaking,
     // and apply the config to the controller
     SparkMaxConfig intakeConfig = new SparkMaxConfig();
+    intakeConfig.idleMode(IdleMode.kBrake);
     intakeConfig.smartCurrentLimit(INTAKE_MOTOR_CURRENT_LIMIT);
     intakeRoller.configure(intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
