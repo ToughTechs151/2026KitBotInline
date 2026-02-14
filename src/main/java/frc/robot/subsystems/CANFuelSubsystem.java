@@ -169,7 +169,7 @@ public class CANFuelSubsystem extends SubsystemBase {
       pidOutput = launcherController.calculate(launcherEncoder.getVelocity());
       newFeedforward = feedforward.calculate(launcherController.getSetpoint());
       launcherRoller.setVoltage(pidOutput + newFeedforward);
-      if (launcherEncoder.getVelocity() < launcherGoal*0.9) {
+      if (launcherEncoder.getVelocity() < launcherGoal*0.93) {
         feederGoal = SmartDashboard.getNumber(SPINUP_FEEDER_ROLLER_KEY, SPIN_UP_FEEDER_VOLTAGE);
       } else {
         feederGoal = SmartDashboard.getNumber(LAUNCHING_FEEDER_ROLLER_KEY, LAUNCHING_FEEDER_VOLTAGE);
